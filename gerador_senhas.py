@@ -1,5 +1,7 @@
 import string
 import random
+import pyperclip
+senhas = []
 def gerar_senha(tamanho):
     alfabeto = string.ascii_letters
     numeros = string.digits
@@ -30,18 +32,25 @@ def gerar_senha(tamanho):
         
     senha_lista = random.choices(todos_caracteres, k=tamanho)
     senha_final = "".join(senha_lista)
-
-    print(f"{senha_final}")
-    print("")
     
     if tamanho >= 12 and letras == "S" and quer_numero=="S" and quer_simbolos=="S":
-        print("Senha forte")
+        senhas.append(f"{senha_final} -> Senha Forte")
         
     elif tamanho >= 8 and op >= 2:
-        print("Senha mediana")
-        
+        senhas.append(f"{senha_final} -> Senha Médiana")
     else:
-        print("Senha fraca")
+        senhas.append(f"{senha_final} -> Senha Fraca")
+        
+    with open(r"C:\Users\ruanp\Documents\Projetos\Gerenciador De senhas seguras\senhas.txt", "a") as arquivo:
+        if tamanho >= 12 and letras == "S" and quer_numero=="S" and quer_simbolos=="S":
+            arquivo.write(f"Senha: {senha_final} -> Segurança Forte\n")
+        elif tamanho >= 8 and op >= 2:
+            arquivo.write(f"Senha: {senha_final} -> Segurança Médiana\n")
+        else:
+            arquivo.write(f"Senha: {senha_final} -> Segurança Fraca\n")
+    
+    pyperclip.copy(senha_final)
+    print("Senha copiada para a área de transferência!")
     
 def loop_menu():
     while True:
@@ -50,7 +59,8 @@ def loop_menu():
         print("============================================")
         print(" 1. Gerar Senhas")
         print(" 2. Ver Dicas de Segurança")
-        print(" 3. Sair")
+        print(" 3. Ver senhas já criadas")
+        print(" 4. Sair")
         print("============================================")
         
         opcao = input("Escolha uma opção: ")
@@ -58,22 +68,34 @@ def loop_menu():
         if opcao == "1":
             print("\n --- Configuração Das Senhas ---")
             quantidade = int(input("Quantas senhas você quer: "))
-            tamanho = int(input("Diga o tamanho da sua senha: "))
             
             i = 1
-        
+            senhas.clear()
             while i <= quantidade:
                 print(f"\n--- [Senha {i} de {quantidade}] ---")
+                tamanho = int(input("Diga o tamanho da sua senha: "))
                 gerar_senha(tamanho)
                 i += 1
+                   
+            print("=" * 30)
+            print("    |      SENHA(S)      |")
+            print("=" * 30)
+            
+            for todas_senhas in senhas:
+                print(todas_senhas)
                 
         elif opcao == "2":
             print("\n--- DICAS DE SEGURANÇA ---")
             print("* Uma senha forte deve ter pelo menos 12 caracteres.")
             print("* Misture sempre letras, números e símbolos.")
             print("* Evite usar dados pessoais como nomes ou aniversários.\n")
-            
+        
         elif opcao == "3":
+            with open(r"C:\Users\ruanp\Documents\Projetos\Gerenciador De senhas seguras\senhas.txt", "r") as arquivo:
+                conteudo = arquivo.read()
+                print(conteudo)
+           
+        elif opcao == "4":
             print("\nSaindo...")
             break
         
