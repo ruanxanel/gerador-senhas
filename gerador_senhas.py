@@ -49,8 +49,10 @@ def gerar_senha(tamanho):
         else:
             arquivo.write(f"Senha: {senha_final} -> Segurança Fraca\n")
     
-    pyperclip.copy(senha_final)
-    print("Senha copiada para a área de transferência!")
+    quer_salva = input("Quer copiar a senha para a área de transferência? [S/N] ").upper()
+    if quer_salva == "S":
+        pyperclip.copy(senha_final)
+        print("Senha copiada para a área de transferência!")
     
 def loop_menu():
     while True:

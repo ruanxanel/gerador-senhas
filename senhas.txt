@@ -11,3 +11,6 @@ Senha: #6. -> Segurança Fraca
 Senha: DyZn<E(8A+M` -> Segurança Forte
 Senha: szq{V&]Y93 -> Segurança Médiana
 Senha: Gi=J:/ -> Segurança Fraca
+Senha: FY.FWyjKq3A2q~uIO3SHYb -> Segurança Forte
+Senha: ui#VDoR2y=Qx -> Segurança Forte
+Senha: :V3&kUzWYZVL -> Segurança Forte
