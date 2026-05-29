@@ -1,7 +1,24 @@
 import string
 import random
-import pyperclip
+import os
+import sys
+
+try:
+    import pyperclip
+    pyperclip_disponivel = True
+except ImportError:
+    pyperclip_disponivel = False
+
+def caminho_base():
+    if getattr(sys, 'frozen', False):
+        return os.path.dirname(sys.executable)
+    return os.path.dirname(os.path.abspath(__file__))
+
+
+arquivo_senhas = os.path.join(caminho_base(), "senhas.txt")
+    
 senhas = []
+
 def gerar_senha(tamanho):
     alfabeto = string.ascii_letters
     numeros = string.digits
@@ -34,25 +51,27 @@ def gerar_senha(tamanho):
     senha_final = "".join(senha_lista)
     
     if tamanho >= 12 and letras == "S" and quer_numero=="S" and quer_simbolos=="S":
-        senhas.append(f"{senha_final} -> Senha Forte")
-        
+        classificacao = "Senha Forte"
+        classificacao_arquivo = "Segurança Forte"
     elif tamanho >= 8 and op >= 2:
-        senhas.append(f"{senha_final} -> Senha Médiana")
+        classificacao = "Senha Médiana"
+        classificacao_arquivo = "Segurança Médiana"
     else:
-        senhas.append(f"{senha_final} -> Senha Fraca")
-        
-    with open(r"C:\Users\ruanp\Documents\Projetos\Gerenciador De senhas seguras\senhas.txt", "a") as arquivo:
-        if tamanho >= 12 and letras == "S" and quer_numero=="S" and quer_simbolos=="S":
-            arquivo.write(f"Senha: {senha_final} -> Segurança Forte\n")
-        elif tamanho >= 8 and op >= 2:
-            arquivo.write(f"Senha: {senha_final} -> Segurança Médiana\n")
-        else:
-            arquivo.write(f"Senha: {senha_final} -> Segurança Fraca\n")
+        classificacao = "Senha Fraca"
+        classificacao_arquivo = "Segurança Fraca"
     
-    quer_salva = input("Quer copiar a senha para a área de transferência? [S/N] ").upper()
-    if quer_salva == "S":
-        pyperclip.copy(senha_final)
-        print("Senha copiada para a área de transferência!")
+    senhas.append(f"{senha_final} -> {classificacao}")
+    
+    with open(arquivo_senhas, "a", encoding="utf-8") as arquivo:
+        arquivo.write(f"Senha: {senha_final} -> {classificacao_arquivo}")
+    
+    if pyperclip_disponivel:
+        quer_salva = input("Quer copiar a senha para a área de transferência? [S/N] ").upper()
+        if quer_salva == "S":
+            pyperclip.copy(senha_final)
+            print("Senha copiada para a área de transferência!")
+    else:
+        print(f"\nSua senha: {senha_final}")
     
 def loop_menu():
     while True:
@@ -93,9 +112,13 @@ def loop_menu():
             print("* Evite usar dados pessoais como nomes ou aniversários.\n")
         
         elif opcao == "3":
-            with open(r"C:\Users\ruanp\Documents\Projetos\Gerenciador De senhas seguras\senhas.txt", "r") as arquivo:
-                conteudo = arquivo.read()
-                print(conteudo)
+            print("\n--- SENHAS SALVAS ---")
+            if not os.path.exists(arquivo_senhas):
+                print("Nenhuma senha gerada ainda")
+            else:
+                with open(arquivo_senhas, "r", encoding="utf-8") as arquivo:
+                    conteudo = arquivo.read()
+                    print(conteudo if conteudo else "Arquivo vazio")
            
         elif opcao == "4":
             print("\nSaindo...")
@@ -104,4 +127,5 @@ def loop_menu():
         else:
             print("\nOpção inválida!!!")
 
-loop_menu()
+if __name__ == "__main__":
+    loop_menu()
